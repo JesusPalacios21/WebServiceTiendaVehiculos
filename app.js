@@ -98,6 +98,23 @@ app.delete("/vehiculos/:id", async(req, res) => {
   }
 })
 
+//SEARCH
+app.get('/vehiculos/placa/:placa', async (req, res) => {
+  const { placa } = req.params;
+
+  try {
+    const [rows] = await pool.query("SELECT * FROM vehiculos WHERE placa = ?", [placa]);
+
+    if (rows.length === 0){
+      return res.status(404).json({ message: 'Vehiculo no encontrado  '});
+    }
+
+    res.status(200).json(rows[0]);
+  }catch(error){
+    handDbError(res, error);
+  }
+});
+
 
 //Iniciar el servidor
 app.listen(port, () => {
